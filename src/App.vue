@@ -1,41 +1,52 @@
 <template>
-  <div class="p-10">
-    <h1 class="text-3xl font-bold text-blue-600 mb-6">
-      Mini Shop - Day 3 🚀
-    </h1>
+  <div class="min-h-screen bg-gray-100">
+    <Header />
 
-    <button
-      @click="loadProducts"
-      class="bg-blue-600 text-white px-4 py-2 rounded mb-6"
-    >
-      Load Products
-    </button>
+    <main class="max-w-7xl mx-auto p-6">
+      <h2 class="text-2xl font-bold text-blue-600 mb-6">
+        Product Collection
+      </h2>
 
-    <div v-if="products.length > 0">
-      <h2 class="text-xl font-bold mb-4">Products:</h2>
+      <div v-if="loading" class="text-lg text-gray-600">
+        Loading products...
+      </div>
 
-      <ul>
-        <li
-          v-for="product in products"
-          :key="product.id"
-          class="mb-2"
-        >
-          {{ product.title }} - ${{ product.price }}
-        </li>
-      </ul>
-    </div>
+      <div v-else-if="error" class="text-red-600 font-semibold">
+        {{ error }}
+      </div>
+
+      <ProductList v-else :products="products" />
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
+import Header from "./components/Header.vue"
+import ProductList from "./components/ProductList.vue"
 import { getProducts } from "./services/productService"
 import type { Product } from "./types/product"
 
 const products = ref<Product[]>([])
+const loading = ref<boolean>(true)
+const error = ref<string>("")
 
 async function loadProducts() {
-  const data = await getProducts()
-  products.value = data.products
+  try {
+    loading.value = true
+    error.value = ""
+
+    const data = await getProducts()
+    products.value = data.products
+  } catch (err) {
+    error.value = "Failed to load products. Please try again."
+    console.error(err)
+  } finally {
+    loading.value = false
+  }
 }
+
+onMounted(() => {
+  loadProducts()
+})
 </script>
