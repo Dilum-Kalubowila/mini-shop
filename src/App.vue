@@ -7,6 +7,11 @@
         Product Collection
       </h2>
 
+      <SearchBar
+        :searchTerm="searchTerm"
+        @update:searchTerm="searchTerm = $event"
+      />
+
       <div v-if="loading" class="text-lg text-gray-600">
         Loading products...
       </div>
@@ -15,21 +20,27 @@
         {{ error }}
       </div>
 
-      <ProductList v-else :products="products" />
+      <div v-else-if="filteredProducts.length === 0" class="text-gray-600 text-lg">
+        No products found.
+      </div>
+
+      <ProductList v-else :products="filteredProducts" />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import Header from "./components/Header.vue"
 import ProductList from "./components/ProductList.vue"
+import SearchBar from "./components/SearchBar.vue"
 import { getProducts } from "./services/productService"
 import type { Product } from "./types/product"
 
 const products = ref<Product[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string>("")
+const searchTerm = ref<string>("")
 
 async function loadProducts() {
   try {
@@ -45,6 +56,18 @@ async function loadProducts() {
     loading.value = false
   }
 }
+
+const filteredProducts = computed(() => {
+  return products.value.filter((product) => {
+    const search = searchTerm.value.toLowerCase()
+
+    return (
+      product.title.toLowerCase().includes(search) ||
+      product.brand.toLowerCase().includes(search) ||
+      product.category.toLowerCase().includes(search)
+    )
+  })
+})
 
 onMounted(() => {
   loadProducts()
