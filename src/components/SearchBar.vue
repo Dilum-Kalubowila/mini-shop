@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-6">
+  <div>
     <input
       :value="searchTerm"
       @input="updateSearch"

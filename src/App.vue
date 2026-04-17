@@ -7,9 +7,19 @@
         Product Collection
       </h2>
 
-      <SearchBar
-        :searchTerm="searchTerm"
-        @update:searchTerm="searchTerm = $event"
+      <div class="mb-6">
+        <SearchBar
+          :searchTerm="searchTerm"
+          @update:searchTerm="searchTerm = $event"
+        />
+      </div>
+
+      <FilterBar
+        :categories="categories"
+        :selectedCategory="selectedCategory"
+        :sortOption="sortOption"
+        @update:selectedCategory="selectedCategory = $event"
+        @update:sortOption="sortOption = $event"
       />
 
       <div v-if="loading" class="text-lg text-gray-600">
@@ -34,6 +44,7 @@ import { computed, onMounted, ref } from "vue"
 import Header from "./components/Header.vue"
 import ProductList from "./components/ProductList.vue"
 import SearchBar from "./components/SearchBar.vue"
+import FilterBar from "./components/FilterBar.vue"
 import { getProducts } from "./services/productService"
 import type { Product } from "./types/product"
 
@@ -41,6 +52,8 @@ const products = ref<Product[]>([])
 const loading = ref<boolean>(true)
 const error = ref<string>("")
 const searchTerm = ref<string>("")
+const selectedCategory = ref<string>("all")
+const sortOption = ref<string>("default")
 
 async function loadProducts() {
   try {
@@ -57,16 +70,38 @@ async function loadProducts() {
   }
 }
 
+const categories = computed(() => {
+  const categoryList = products.value.map((product) => product.category)
+  return [...new Set(categoryList)]
+})
+
 const filteredProducts = computed(() => {
-  return products.value.filter((product) => {
+  let filtered = products.value.filter((product) => {
     const search = searchTerm.value.toLowerCase()
 
-    return (
+    const matchesSearch =
       product.title.toLowerCase().includes(search) ||
       product.brand.toLowerCase().includes(search) ||
       product.category.toLowerCase().includes(search)
-    )
+
+    const matchesCategory =
+      selectedCategory.value === "all" ||
+      product.category === selectedCategory.value
+
+    return matchesSearch && matchesCategory
   })
+
+  if (sortOption.value === "price-low") {
+    filtered = [...filtered].sort((a, b) => a.price - b.price)
+  } else if (sortOption.value === "price-high") {
+    filtered = [...filtered].sort((a, b) => b.price - a.price)
+  } else if (sortOption.value === "rating-high") {
+    filtered = [...filtered].sort((a, b) => b.rating - a.rating)
+  } else if (sortOption.value === "title-az") {
+    filtered = [...filtered].sort((a, b) => a.title.localeCompare(b.title))
+  }
+
+  return filtered
 })
 
 onMounted(() => {
