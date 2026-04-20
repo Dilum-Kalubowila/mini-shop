@@ -55,9 +55,16 @@
             Stock: {{ product.stock }}
           </p>
 
-          <p class="text-gray-600">
+          <p class="text-gray-600 mb-4">
             Discount: {{ product.discountPercentage }}%
           </p>
+
+          <button
+            @click="cart.addToCart(product)"
+            class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </main>
@@ -69,9 +76,11 @@ import { onMounted, ref } from "vue"
 import { useRoute, RouterLink } from "vue-router"
 import Header from "../components/Header.vue"
 import { getProductById } from "../services/productService"
+import { useCartStore } from "../stores/cart"
 import type { Product } from "../types/product"
 
 const route = useRoute()
+const cart = useCartStore()
 
 const product = ref<Product | null>(null)
 const loading = ref<boolean>(true)

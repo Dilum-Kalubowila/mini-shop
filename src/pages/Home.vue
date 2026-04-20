@@ -30,11 +30,19 @@
         {{ error }}
       </div>
 
-      <div v-else-if="filteredProducts.length === 0" class="text-gray-600 text-lg">
-        No products found.
-      </div>
+      <div v-else class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="lg:col-span-3">
+          <div v-if="filteredProducts.length === 0" class="text-gray-600 text-lg">
+            No products found.
+          </div>
 
-      <ProductList v-else :products="filteredProducts" />
+          <ProductList v-else :products="filteredProducts" />
+        </div>
+
+        <div class="lg:col-span-1">
+          <CartSidebar />
+        </div>
+      </div>
     </main>
   </div>
 </template>
@@ -45,6 +53,7 @@ import Header from "../components/Header.vue"
 import ProductList from "../components/ProductList.vue"
 import SearchBar from "../components/SearchBar.vue"
 import FilterBar from "../components/FilterBar.vue"
+import CartSidebar from "../components/CartSidebar.vue"
 import { getProducts } from "../services/productService"
 import type { Product } from "../types/product"
 
