@@ -1,93 +1,74 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
-    <Header />
+  <div>
+    <AppHeader />
+    <CartSidebar />
 
-    <main class="max-w-7xl mx-auto p-6">
-      <h2 class="text-2xl font-bold text-blue-600 mb-6">
-        Product Collection
-      </h2>
-
-      <div class="mb-6">
-        <SearchBar
-          :searchTerm="searchTerm"
-          @update:searchTerm="searchTerm = $event"
-        />
-      </div>
+    <main class="p-10 space-y-6">
+      <SearchBar
+        :searchTerm="searchTerm"
+        @update:searchTerm="searchTerm = $event"
+      />
 
       <FilterBar
-        :categories="categories"
+        :categories="formattedCategories"
         :selectedCategory="selectedCategory"
         :sortOption="sortOption"
         @update:selectedCategory="selectedCategory = $event"
         @update:sortOption="sortOption = $event"
       />
 
-      <div v-if="loading" class="text-lg text-gray-600">
-        Loading products...
-      </div>
-
-      <div v-else-if="error" class="text-red-600 font-semibold">
-        {{ error }}
-      </div>
-
-      <div v-else class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div class="lg:col-span-3">
-          <div v-if="filteredProducts.length === 0" class="text-gray-600 text-lg">
-            No products found.
-          </div>
-
-          <ProductList v-else :products="filteredProducts" />
-        </div>
-
-        <div class="lg:col-span-1">
-          <CartSidebar />
-        </div>
-      </div>
+      <div v-if="loading" class="text-lg">Loading products...</div>
+      <div v-else-if="error" class="text-red-500">{{ error }}</div>
+      <ProductList v-else :products="filteredProducts" />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue"
-import Header from "../components/Header.vue"
+import AppHeader from "../components/AppHeader.vue"
+import CartSidebar from "../components/CartSidebar.vue"
+import FilterBar from "../components/FilterBar.vue"
 import ProductList from "../components/ProductList.vue"
 import SearchBar from "../components/SearchBar.vue"
-import FilterBar from "../components/FilterBar.vue"
-import CartSidebar from "../components/CartSidebar.vue"
 import { getProducts } from "../services/productService"
 import type { Product } from "../types/product"
+import { titleCase } from "../utils/format"
 
 const products = ref<Product[]>([])
-const loading = ref<boolean>(true)
-const error = ref<string>("")
-const searchTerm = ref<string>("")
-const selectedCategory = ref<string>("all")
-const sortOption = ref<string>("default")
+const loading = ref(true)
+const error = ref("")
+const searchTerm = ref("")
+const selectedCategory = ref("all")
+const sortOption = ref("default")
 
 async function loadProducts() {
   try {
     loading.value = true
     error.value = ""
-
     const data = await getProducts()
     products.value = data.products
   } catch (err) {
-    error.value = "Failed to load products. Please try again."
     console.error(err)
+    error.value = "Failed to load products."
   } finally {
     loading.value = false
   }
 }
 
 const categories = computed(() => {
-  const categoryList = products.value.map((product) => product.category)
-  return [...new Set(categoryList)]
+  const list = products.value.map((product) => product.category)
+  return [...new Set(list)]
 })
 
-const filteredProducts = computed(() => {
-  let filtered = products.value.filter((product) => {
-    const search = searchTerm.value.toLowerCase()
+const formattedCategories = computed(() =>
+  categories.value.map((category) => titleCase(category))
+)
 
+const filteredProducts = computed(() => {
+  const search = searchTerm.value.toLowerCase().trim()
+
+  let filtered = products.value.filter((product) => {
     const matchesSearch =
       product.title.toLowerCase().includes(search) ||
       product.brand.toLowerCase().includes(search) ||
@@ -95,7 +76,7 @@ const filteredProducts = computed(() => {
 
     const matchesCategory =
       selectedCategory.value === "all" ||
-      product.category === selectedCategory.value
+      titleCase(product.category) === selectedCategory.value
 
     return matchesSearch && matchesCategory
   })
@@ -113,7 +94,5 @@ const filteredProducts = computed(() => {
   return filtered
 })
 
-onMounted(() => {
-  loadProducts()
-})
+onMounted(loadProducts)
 </script>

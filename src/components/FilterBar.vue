@@ -1,13 +1,13 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="grid grid-cols-1 gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-3">
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">
+      <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
         Category
       </label>
       <select
         :value="selectedCategory"
         @change="updateCategory"
-        class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-slate-800 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-slate-500 dark:focus:ring-slate-800"
       >
         <option value="all">All Categories</option>
         <option
@@ -21,13 +21,13 @@
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        Sort By
+      <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
+        Sort by
       </label>
       <select
         :value="sortOption"
         @change="updateSort"
-        class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-slate-800 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-slate-500 dark:focus:ring-slate-800"
       >
         <option value="default">Default</option>
         <option value="price-low">Price: Low to High</option>
@@ -35,6 +35,12 @@
         <option value="rating-high">Rating: High to Low</option>
         <option value="title-az">Title: A to Z</option>
       </select>
+    </div>
+
+    <div class="flex items-end">
+      <div class="w-full rounded-2xl bg-slate-50 p-3 text-sm text-slate-500 dark:bg-slate-950 dark:text-slate-300">
+        Use search, category, and sorting together to quickly find products.
+      </div>
     </div>
   </div>
 </template>

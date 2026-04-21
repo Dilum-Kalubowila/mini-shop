@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div class="relative">
+    <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔎</span>
     <input
       :value="searchTerm"
       @input="updateSearch"
       type="text"
-      placeholder="Search by title, brand, or category..."
-      class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Search products, brands, or categories..."
+      class="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-500 dark:focus:ring-slate-800"
     />
   </div>
 </template>
