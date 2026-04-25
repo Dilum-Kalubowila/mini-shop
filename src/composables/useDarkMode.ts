@@ -1,42 +1,34 @@
 import { computed, ref } from "vue"
 
-const THEME_STORAGE_KEY = "mini-shop-theme"
-const isDark = ref(false)
-let initialized = false
+const THEME_KEY = "theme"
+const isDarkState = ref(false)
 
-function applyTheme(value: boolean) {
-  document.documentElement.classList.toggle("dark", value)
+function applyTheme() {
+  document.documentElement.classList.toggle("dark", isDarkState.value)
 }
 
 export function useDarkMode() {
   function initTheme() {
-    if (initialized) return
+    const savedTheme = localStorage.getItem(THEME_KEY)
 
-    try {
-      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY)
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-
-      isDark.value = savedTheme ? savedTheme === "dark" : prefersDark
-      applyTheme(isDark.value)
-      initialized = true
-    } catch (error) {
-      console.error("Dark mode init error:", error)
+    if (savedTheme === "dark") {
+      isDarkState.value = true
+    } else {
+      isDarkState.value = false
     }
+
+    applyTheme()
   }
 
-  function toggleDarkMode() {
-    try {
-      isDark.value = !isDark.value
-      applyTheme(isDark.value)
-      localStorage.setItem(THEME_STORAGE_KEY, isDark.value ? "dark" : "light")
-    } catch (error) {
-      console.error("Dark mode toggle error:", error)
-    }
+  function toggleDark() {
+    isDarkState.value = !isDarkState.value
+    localStorage.setItem(THEME_KEY, isDarkState.value ? "dark" : "light")
+    applyTheme()
   }
 
   return {
-    isDark: computed(() => isDark.value),
+    isDark: computed(() => isDarkState.value),
     initTheme,
-    toggleDarkMode
+    toggleDark
   }
 }
