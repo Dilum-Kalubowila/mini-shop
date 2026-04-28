@@ -1,12 +1,15 @@
 <template>
   <div class="relative">
-    <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔎</span>
+    <span class="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-lg">
+      🔎
+    </span>
+
     <input
       :value="searchTerm"
       @input="updateSearch"
       type="text"
       placeholder="Search products, brands, or categories..."
-      class="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-500 dark:focus:ring-slate-800"
+      class="w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 pl-14 text-slate-900 outline-none shadow-sm transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:ring-slate-800"
     />
   </div>
 </template>

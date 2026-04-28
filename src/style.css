@@ -7,8 +7,10 @@ html {
 }
 
 body {
+  margin: 0;
   font-family: Inter, system-ui, sans-serif;
 }
+
 * {
   box-sizing: border-box;
 }
@@ -18,34 +20,9 @@ img {
   max-width: 100%;
 }
 
-.fade-enter-active,
-.fade-leave-active,
-.slide-cart-enter-active,
-.slide-cart-leave-active {
-  transition: all 0.25s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.slide-cart-enter-from,
-.slide-cart-leave-to {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
 .line-clamp-1 {
   display: -webkit-box;
   -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
